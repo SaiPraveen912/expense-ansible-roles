@@ -46,11 +46,17 @@
   args:
     chdir: /app # npm install should be installed in /app dierectory
 
+# - name: copy backend service
+#   ansible.builtin.template:
+#     src: backend.service.j2
+#     dest: /etc/systemd/system/backend.service
+#   notify: deamon reload
+
 - name: copy backend service
   ansible.builtin.template:
     src: backend.service.j2
     dest: /etc/systemd/system/backend.service
-  notify: deamon reload
+  notify: daemon reload
 
 
 - name: install python mysql dependencies
