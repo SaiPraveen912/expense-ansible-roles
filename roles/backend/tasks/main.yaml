@@ -50,6 +50,7 @@
   ansible.builtin.template:
     src: backend.service.j2
     dest: /etc/systemd/system/backend.service
+  notify: deamon reload
 
 
 - name: install python mysql dependencies
@@ -68,9 +69,9 @@
     state: import
     name: all
 
-- name: daemon reload
-  ansible.builtin.systemd_service:
-    daemon_reload: true 
+# - name: daemon reload
+#   ansible.builtin.systemd_service:
+#     daemon_reload: true 
 
 - name: start and enable backend service
   tags:
