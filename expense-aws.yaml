@@ -2,6 +2,11 @@
   hosts: localhost
   vars:
     zone: daws-78s.cloud
+    instances:
+    - db
+    - backend
+    - frontend
+
   tasks: 
   - name: create ec2 instances
     amazon.aws.ec2_instance:
@@ -12,11 +17,20 @@
       tags:
         Name: "{{ item }}"
     loop:
-    - db
-    - backend
-    - frontend
+    - "{{ instances }}"
     register: ec2_instances_info
 
   - name: print output
     ansible.builtin.debug:
       msg: "Output: {{ ec2_instances_info }}"
+
+  - name: create route r53 records
+    amazon.aws.route53:
+      state: present
+      zone: "{{ zone }}"
+      record: "{{ item }}.{{ zone }}"
+      type: A
+      value: "{{ item.private_ip_address }}"
+      overwrite: true
+      ttl: 1
+    loop: "{{ result.instances }}"
